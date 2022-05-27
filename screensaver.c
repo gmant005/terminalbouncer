@@ -1,5 +1,3 @@
-// C program to build the outline
-// boundary using draw()
 #include <sys/ioctl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,11 +8,6 @@ void draw(int height, int width)
 {
 	for (i=0; i < height; i++)
 	{
-//                if(i < height-1)
-//                {
-//                        printf("\n");
-//                }
-
 		for (j=0; j < width; j++)
 		{
 			if (i != y && j != x)
@@ -40,8 +33,7 @@ int main()
 		ioctl(0,TIOCGWINSZ, &w);
 		printf("\e[1;1H\e[2J");
 		draw(w.ws_row, w.ws_col);
-//		printf("e");
-		if (y >= w.ws_row-1)
+		if (y >= w.ws_row-2)
 		{
 			ym=-1;
 		} else if (y == 0)
@@ -57,10 +49,7 @@ int main()
 		}
 		x=x+xm;
 		y=y+ym;
-//	        printf ("lines %d\n", w.ws_row);
-//	        printf ("columns %d\n", w.ws_col);
 	usleep(100000);
 	}
     	return 0;
 }
-
