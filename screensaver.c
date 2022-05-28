@@ -1,55 +1,57 @@
-#include <sys/ioctl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-// might need to make cross compatible.
-int i, j, x=0, y=0, xm=1, ym=1;
-void draw(int height, int width)
-{
-	for (i=0; i < height; i++)
-	{
-		for (j=0; j < width; j++)
-		{
-			if (i != y && j != x)
-			{
-				printf(" ");
-			} else
-			{
-				printf("#");
-			}
-		}
-		if(i < height-1)
-		{
-			printf("\n");
-		}
-	}
-}
+#include <sys/ioctl.h>
+
+int i, j, x = 1, y = 1, xm = 1, ym = 1;
+
 int main()
 {
-	printf("\e[?25l");
-	for(;;)
+	printf("test");
+	struct winsize w;
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+
+	for (;;)
 	{
-		struct winsize w;
-		ioctl(0,TIOCGWINSZ, &w);
-		printf("\e[1;1H\e[2J");
-		draw(w.ws_row, w.ws_col);
-		if (y >= w.ws_row-2)
+		for (i = 0; i < w.ws_row; i++)
 		{
-			ym=-1;
-		} else if (y == 0)
-		{
-			ym=1;
+			for (j = 0; j < w.ws_col; j++)
+			{
+				if (i == y || j == x)
+				{
+					putchar('#');
+				}
+				else
+				{
+					putchar(' ');
+				}
+			}
+			if (i < w.ws_row - 1)
+			{
+				printf("\n");
+			}
 		}
-		if (x >= w.ws_col-1)
+		fflush(stdout);
+		if (y >= w.ws_row - 1)
 		{
-			xm=-1;
-		} else if (x == 0)
-		{
-			xm=1;
+			ym = -1;
 		}
-		x=x+xm;
-		y=y+ym;
-	usleep(100000);
+		else if (y == 0)
+		{
+			ym = 1;
+		}
+		if (x >= w.ws_col - 1)
+		{
+			xm = -1;
+		}
+		else if (x == 0)
+		{
+			xm = 1;
+		}
+		x += xm;
+		y += ym;
+		usleep(100000);
 	}
-    	return 0;
+	return 0;
+
 }
