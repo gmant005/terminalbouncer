@@ -3,27 +3,61 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 
-int i, j, x = 1, y = 1, xm = 1, ym = 1;
+int i, j, x = 1, y = 1, xm = 1, ym = 1, F = 0;
 
-int main()
+int main(int argc, char *argv[])
 {
-	printf("test");
 	struct winsize w;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+	while ((++argv)[0]) // this will get any flags/arguments.
+    {
+            if (argv[0][0] == '-' )
+            {
+                    switch (argv[0][1])  {
+
+                            default:
+                                    printf("Unknown option -%c screensaver -h for help\n\n", argv[0][1]); // if you put an invalid argument
+                                    exit(0);
+                                    break;
+                            case 'H':
+                            case 'h':
+                                    printf("Function:\n    Just make a # bounce around.\nUsage: uwu <args>\n    -h Displays this menu.\n    -f Full lines.\n"); // the help menu
+                                    exit(0);
+                                    break;
+                            case 'F':
+                            case 'f':
+                                    F = 1;
+                                    break;
+                    }
+            }
+    }
 
 	for (;;)
 	{
+		system("clear");
 		for (i = 0; i < w.ws_row; i++)
 		{
 			for (j = 0; j < w.ws_col; j++)
 			{
-				if (i == y || j == x)
+				if (F == 1)
 				{
-					putchar('#');
-				}
-				else
-				{
-					putchar(' ');
+					if (i == y || j == x)
+					{
+						putchar('#');
+					}
+					else
+					{
+						putchar(' ');
+					}
+				} else {
+					if (i == y && j == x)
+					{
+						putchar('#');
+					}
+					else
+					{
+						putchar(' ');
+					}
 				}
 			}
 			if (i < w.ws_row - 1)
